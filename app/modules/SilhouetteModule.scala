@@ -93,6 +93,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    * @param twitterProvider The Twitter provider implementation.
    * @param xingProvider The Xing provider implementation.
    * @param yahooProvider The Yahoo provider implementation.
+   * @param githubProvider The Github provider implementation.
    * @return The Silhouette environment.
    */
   @Provides
@@ -103,11 +104,13 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     clefProvider: ClefProvider,
     twitterProvider: TwitterProvider,
     xingProvider: XingProvider,
-    yahooProvider: YahooProvider): SocialProviderRegistry = {
+    yahooProvider: YahooProvider,
+    githubProvider: GitHubProvider): SocialProviderRegistry = {
 
     SocialProviderRegistry(Seq(
       googleProvider,
       facebookProvider,
+      githubProvider,
       twitterProvider,
       vkProvider,
       xingProvider,
@@ -222,6 +225,21 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
     new FacebookProvider(httpLayer, stateProvider, configuration.underlying.as[OAuth2Settings]("silhouette.facebook"))
   }
+
+  /**
+    * Provides the Github provider.
+    *
+    * @param httpLayer The HTTP layer implementation.
+    * @param stateProvider The OAuth2 state provider implementation.
+    * @param configuration The Play configuration.
+    * @return The Github provider.
+    */
+  @Provides
+  def provideGithubProvider(
+    httpLayer: HTTPLayer,
+    stateProvider: OAuth2StateProvider,
+    configuration: Configuration): GitHubProvider =
+      new GitHubProvider(httpLayer, stateProvider, configuration.underlying.as[OAuth2Settings]("silhouette.github"))
 
   /**
    * Provides the Google provider.
